@@ -1,0 +1,18 @@
+{
+  "name": "BranhamForum",
+  "version": "1.0.0",
+  "repository": "https://github.com/mattfbacon/BranhamForum.git",
+  "author": "Matt Fellenz <mattf53190@gmail.com>",
+  "license": "AGPL-3.0-only",
+  "devDependencies": {
+    "cssnano": "^4.1.10",
+    "elm": "^0.19.1-5",
+    "less": "^4.1.1",
+    "nunjucks-cli": "^1.0.0",
+    "postcss": "^8.2.8",
+    "postcss-cli": "^8.3.1",
+    "stylelint": "^13.12.0",
+    "stylelint-config-standard": "^21.0.0",
+    "uglify-js": "^3.13.0"
+  }
+}
