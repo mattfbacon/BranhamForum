@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="description" content="{% if desc %}{{desc}}{% endif %}">
+		<title>{% if title %}{{title}} · {% endif %}BranhamForum</title>
+		<link rel="preconnect" href="https://fonts.gstatic.com">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/3.0.3/normalize.min.css" type="text/css">
+		<link rel="stylesheet" href="/milligram.min.css" type="text/css">
+		<link rel="stylesheet" href="/common.min.css" type="text/css">
+		{% block styles %}{% endblock %}
+		<link rel="shortcut icon" href="/favicon.svg" type="image/svg+xml">
+		<link href="https://fonts.googleapis.com/css2?family=Merriweather+Sans:wght@300..700&display=swap" rel="stylesheet">
+	</head>
+	<body>
+		{% include 'partials/nav.njk' %}
+		{% block content %}
+		<main id="main"></main>
+		{% endblock %}
+		<script src="/{{filename}}.min.js"></script>
+		{% block loader %}
+		<script>Elm.{{filename}}.init({ 'node': document.getElementById("main"), });</script>
+		{% endblock %}
+	</body>
+</html>
