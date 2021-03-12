@@ -1,43 +1,62 @@
 module Index exposing (..)
 
-import Browser
+import Browser exposing (application, UrlRequest(..), Document)
+import Browser.Navigation exposing (Key, pushUrl)
+import Url exposing (Url)
 
-import Css exposing (..)
+import Html exposing (main_, text, h1)
 
-import Html.Styled exposing (main_, button, text, toUnstyled, Html, Attribute, styled)
-import Html.Styled.Events exposing (onClick)
-import Html.Styled.Attributes exposing (css)
+import String exposing (startsWith)
 
-colors : { primary: Color, primaryHover: Color, secondary: Color }
-colors =
-  { primary = (hex "9b4dca") -- Milligram purple
-  , primaryHover = (hex "606c76") -- Milligram grey
-  , secondary = (hex "9dd392") -- light faded green
+import Components.Nav exposing (viewNav, pageToTitle)
+import Types exposing (User(..), Page(..))
+
+urlToPage : Url -> Page
+urlToPage url =
+  let urlChecker = startsWith ( url.path )
+  in if urlChecker "/"
+    then Home
+    else if urlChecker "/about"
+      then About
+      else UnknownPage (Url.toString url)
+
+type alias AppState =
+  { url: Url, navKey: Key, user: User }
+
+appInit : () -> Url -> Key -> (AppState, Cmd Msg)
+appInit _ url key =
+  (AppState url key Guest, pushUrl key "/")
+
+appSubscriptions : AppState -> Sub msg
+appSubscriptions _ = Sub.none
+
+main : Program () AppState Msg
+main = application
+  { init = appInit
+  , update = appUpdate
+  , view = appView
+  , subscriptions = appSubscriptions
+  , onUrlRequest = ClickedLink
+  , onUrlChange = UrlChanged
   }
 
-type alias StyledHtml msg = List (Attribute msg) -> List (Html msg) -> Html msg
+type Msg =
+  NoUpdate
+  | ClickedLink UrlRequest
+  | UrlChanged Url
 
-main : Program () Int Msg
-main = Browser.sandbox { init = 0, update = update, view = view >> toUnstyled }
+appUpdate : Msg -> AppState -> (AppState, Cmd Msg)
+appUpdate msg model = case msg of
+  NoUpdate -> (model, Cmd.none)
+  ClickedLink urlRequest -> case urlRequest of
+    Internal url -> (model, pushUrl model.navKey (Url.toString url))
+    External href -> (model, Browser.Navigation.load href)
+  UrlChanged url -> ({ model | url = url }, Cmd.none)
 
-type Msg = Increment | Half
 
-update : Msg -> Int -> Int
-update msg model =
-  case msg of
-    Increment ->
-      model + 1
-    Half ->
-      model // 2
-
-view : Int -> Html Msg
-view model =
-  main_ [] [
-    button [
-      onClick Half
-    ] [ text "÷" ]
-  , text (String.fromInt model)
-  , button [
-      onClick Increment
-    ] [ text "+" ]
-  ]
+appView : AppState -> Document Msg
+appView model =
+  let
+    page = urlToPage model.url
+    body = [ h1 [] [ pageToTitle page |> text ] ]
+  in Document (pageToTitle page) [ viewNav page, main_ [] body ]
