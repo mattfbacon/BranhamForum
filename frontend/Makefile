@@ -31,7 +31,7 @@ $(FRONTEND_DIST)/%: $(FRONTEND_SRC)/static/%
 	mkdir -p $(dir $@)
 	cp $< $@
 
-$(FRONTEND_DIST)/%.html: $(FRONTEND_SRC)/pages/%.njk $(FRONTEND_DIST)/%.min.css $(FRONTEND_DIST)/common.min.css $(FRONTEND_DIST)/%.min.js $(ALL_TEMPLATE_FILES)
+$(FRONTEND_DIST)/%.html: $(FRONTEND_SRC)/pages/%.njk $(ALL_TEMPLATE_FILES)
 	./nunjucksbuild.js $< $@ $(NUNJUCKS_TEMPLATES)
 
 ALL_FILES := \
